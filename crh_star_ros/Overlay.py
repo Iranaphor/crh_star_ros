@@ -8,7 +8,7 @@
 
 class Overlay():
 
-    def __init__(self, Network)
+    def __init__(self, Network):
         self.EER = [] #EdgeExtensionsReference
         self.NER = [] #NodeExtensionsReference
         self.NER_Name = [] #NodeExtensionsReferenceName
@@ -17,32 +17,32 @@ class Overlay():
 
         # Create Edge Extensions
         self.EdgeExtensions = [EdgeExt(edge) for edge in Network.edge_list]
-        EN1 = [Network.edge_list.node1]'
-        EN2 = [Network.edge_list.node2]'
-        self.EER = [EN1.id;EN2.id]'
+        EN1 = [Network.edge_list.node1].transpose
+        EN2 = [Network.edge_list.node2].transpose
+        self.EER = [EN1.id,EN2.id]
 
         # Create Node Extensions
         self.NodeExtensions = [NodeExt(node) for node in Network.node_list]
-        self.NER = [Network.node_list.id];
-        self.NER_Name = [Network.node_list.name];
+        self.NER = [Network.node_list.id]
+        self.NER_Name = [Network.node_list.name]
 
     def Copy(self):
-        newNet = Network(...
-            self.Network.node_locations, ...
+        newNet = Network(\
+            self.Network.node_locations, \
             self.Network.adjacency_matrix)
         overlayCopy = Overlay(newNet)
 
         #Copy reservation information
-        for i=1:length(self.EdgeExtensions)
-            overlayCopy.EdgeExtensions(i).reservations = ...
+        for i in range(1,len(self.EdgeExtensions)):
+            overlayCopy.EdgeExtensions(i).reservations = \
                       self.EdgeExtensions(i).reservations
         return overlayCopy
 
     def RemovePath(self, agent_id):
-        for EExt = self.EdgeExtensions
+        for EExt in self.EdgeExtensions:
             EExt.PurgeAgent(agent_id)
 
-    def node = findNode(self, nodeID):
+    def findNode(self, nodeID):
         node = self.NodeExtensions(nodeID==self.NER).node
         return node
 
@@ -51,8 +51,8 @@ class Overlay():
         return node
 
     def findNodeByName(self, nodeName):
-        for node in self.Network.node_list
-            if node.name == nodeName
+        for node in self.Network.node_list:
+            if node.name == nodeName:
                 return node
 
     def findNodeExtByName(self, nodeName):
@@ -60,12 +60,12 @@ class Overlay():
         return node
 
     def findNeighbours(self, NExt):
-        neighbours = {}
-        for N_id in NExt.node.neighbour_list
-            neighbours{end+1} = self.findNodeExt(N_id)
+        neighbours = []
+        for N_id in NExt.node.neighbour_list:
+            neighbours[end+1] = self.findNodeExt(N_id)
         return neighbours
 
     def findEdgeExt(self, ID1, ID2):
-            edgeRet = self.EdgeExtensions(any([all(self.EER'==[ID1;ID2]);...
-                                               all(self.EER'==[ID2;ID1])]))
-            return edgeRet
+        edgeRet = self.EdgeExtensions(any([all(self.EER==[ID1,ID2]),\
+                                           all(self.EER==[ID2,ID1])]))
+        return edgeRet

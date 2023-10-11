@@ -2,8 +2,8 @@ class NodeExt():
 
     def __init__(node):
         self.node = node
-        self.total_neighbours = length(self.node.neighbour_list)
-        self.departure_times = zeros(self.total_neighbours,1)
+        self.total_neighbours = len(self.node.neighbour_list)
+        self.departure_times = [0]*len(self.total_neighbours)
         self.CRH = 0
         self.Purge()
 
@@ -23,7 +23,7 @@ class NodeExt():
 
         self.arrival_time = 0 #Previously entry_time
         self.departure_time = 0
-        self.departure_times = zeros(self.total_neighbours,1)
+        self.departure_times = [0]*len(self.total_neighbours)
 
     def UpdateCosts(self, f_cost, g_cost, h_cost):
         self.f_cost = f_cost
@@ -37,10 +37,10 @@ class NodeExt():
     def UpdateTimes(self, current, edge):
         dpt=current.get_departure_times(NExt.id)
         self.arrival_time = dpt + edge.time_weight
-        self.departure_times = ones(self.total_neighbours,1)*self.arrival_time
+        self.departure_times = [self.arrival_time]*len(self.total_neighbours)
 
     def set_departure_times(self, neighbourID, time):
-        self.departure_times(self.node.neighbour_list==neighbourID) = time
+        self.departure_times[self.node.neighbour_list==neighbourID] = time
 
     def get_departure_times(self, neighbourID):
         time = self.departure_times(self.node.neighbour_list==neighbourID)
@@ -51,7 +51,7 @@ class NodeExt():
         self.set_departure_times(current.id, self.arrival_time + delay)
 
     def Plot(self):
-        self.nodePlot = scatter(self.node.position(1), ...
+        self.nodePlot = scatter(self.node.position(1), \
                                 self.node.position(2),'k','filled')
 
     def ChangeState(self, state):

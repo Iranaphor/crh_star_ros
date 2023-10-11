@@ -1,41 +1,41 @@
 class Agent():
 
-    properties
-        agent_id
-
-        #Movement Information
-        startID
-        targetID
-        reservations
-        planningType
-
-        #Heuristic Meta
-        heuristic_details
-        use_continuous_assignment
-        use_dynamic_scoring
-        use_context_dependent_heuristics
-        independent_heuristic
-        dependent_heuristic
-        include_irritation
-
-        # Context-Independent | Static | Heuristic Data
-        direct_euclidian_distance
-        optimal_route_length
-        optimal_planning_time
-        random_score
-        irritation
-
-        # Context-Dependent | Static | Heuristic Data
-        task_details
-        agentType
-        taskType
-        load
-        randomCropNode1
-        randomCropNode2
-        row_to_monitor
-        randomRowNode1
-        randomRowNode2
-        task_importance
+#    properties
+#        agent_id
+#
+#        #Movement Information
+#        startID
+#        targetID
+#        reservations
+#        planningType
+#
+#        #Heuristic Meta
+#        heuristic_details
+#        use_continuous_assignment
+#        use_dynamic_scoring
+#        use_context_dependent_heuristics
+#        independent_heuristic
+#        dependent_heuristic
+#        include_irritation
+#
+#        # Context-Independent | Static | Heuristic Data
+#        direct_euclidian_distance
+#        optimal_route_length
+#        optimal_planning_time
+#        random_score
+#        irritation
+#
+#        # Context-Dependent | Static | Heuristic Data
+#        task_details
+#        agentType
+#        taskType
+#        load
+#        randomCropNode1
+#        randomCropNode2
+#        row_to_monitor
+#        randomRowNode1
+#        randomRowNode2
+#        task_importance
 
 
     def __init__(ROSSim, currentName, Network):
@@ -66,14 +66,14 @@ class Agent():
     def SetupTask(self, agent_type):
         self.agentType = agent_type
 
-        if self.agentType == "logistics"
+        if self.agentType == "logistics":
             self.taskType = "move_to_picker"
             self.load = 0
             self.task_importance = 3
-        elif self.agentType == "crop_monitoring"
+        elif self.agentType == "crop_monitoring":
             self.taskType = "move_to_edge"
             self.task_importance = 2
-        elif self.agentType == "row_monitoring"
+        elif self.agentType == "row_monitoring":
             self.taskType = "move_to_row_start"
             self.task_importance = 1
 
@@ -91,10 +91,10 @@ class Agent():
 
 
         #Return if already at target node
-        if self.targetID == self.startID
-            self.reservations = Reservation(...
-                             self.startID, self.targetID, ...
-                             start_time, start_time, ...
+        if self.targetID == self.startID:
+            self.reservations = Reservation(\
+                             self.startID, self.targetID, \
+                             start_time, start_time, \
                              self.agent_id, 0, 1)
             self.reservations.delayed = 0
             return
@@ -124,9 +124,9 @@ class Agent():
         self.total_deadlocks_overcome = 0
 
         #Identify route
-        disp(newline+"Agent "+self.agent_id+" begins planning to node "...
+        print(newline+"Agent "+self.agent_id+" begins planning to node "\
             +Target.name+"n ("+Target.id+"i)")
-        [Reservation_List, NewOverlay] = self.astar_modified(...
+        [Reservation_List, NewOverlay] = self.astar_modified(\
             self.currentID, self.targetID, NewOverlay, start_time, true)
         self.reservations = Reservation_List
         self.Overlay = NewOverlay
@@ -137,11 +137,11 @@ class Agent():
 
     def Replan(self, failed_reservations):
         #Takes list of reservation objects beaten in battle.
-        disp(newline+"Agent " + self.agent_id + " begins replanning.")
+        print(newline+"Agent " + self.agent_id + " begins replanning.")
 
         #Infinite loop detector
-        if length(dbstack) > (length(self.ROS.Agent_List)*150)
-            disp("we in trouble... long dbstack")
+        if len(dbstack) > (len(self.ROS.Agent_List)*150):
+            print("we in trouble\ long dbstack")
             bp=psuedo_breakpoint # <- breakpoint
 
 
@@ -152,20 +152,20 @@ class Agent():
 
         # Identify Start Node [sN is node at start of conflict edge]
         # Find first path component reached
-        failed_reservation_mat=[failed_reservations{:}]
-        failed_reservation_mat([failed_reservation_mat.uuid]~=self.reservation_uuid)=[]
+        failed_reservation_mat=[failed_reservations[:]]
+        failed_reservation_mat[[failed_reservation_mat.uuid]!=self.reservation_uuid]=[]
         early = min([failed_reservation_mat.position])
 
-        if length(failed_reservations) ~= length(failed_reservation_mat):
-            disp("")
+        if len(failed_reservations) != len(failed_reservation_mat):
+            print("")
 
 
-        if ~isempty(failed_reservation_mat):
-            disp("Reservations Valid")
+        if not isempty(failed_reservation_mat):
+            print("Reservations Valid")
 
             #Find associated reservation
             InitialPath = self.reservations
-            if early~=1:
+            if early!=1:
                 sN = InitialPath(early).fromID
             else:
                 sN = self.currentID
@@ -176,16 +176,16 @@ class Agent():
 
         # Replan Paths
 
-        if ~isempty(failed_reservation_mat):
+        if not isempty(failed_reservation_mat):
 
             # Plan Path from Conflict
-            #TODO: add condition to only do if (sN ~= self.currentID)
-            [ReservationList1, Overlay1] = self.replan_from_conflict(...
+            #TODO: add condition to only do if (sN != self.currentID)
+            [ReservationList1, Overlay1] = self.replan_from_conflict(\
                 sN, IPe, InitialPath, early)
 
 
             # Plan Path from Conflict (with delay)
-            [ReservationList2, Overlay2, delay] = self.replan_with_delay(...
+            [ReservationList2, Overlay2, delay] = self.replan_with_delay(\
                 sN, IPe, InitialPath, early)
 
 
@@ -199,29 +199,29 @@ class Agent():
         if isempty(failed_reservation_mat):
             times = [1, 1, 0]
         else:
-            times = [ReservationList1(1).time_out, ...
-                 ReservationList2(1).time_out, ...
+            times = [ReservationList1(1).time_out, \
+                 ReservationList2(1).time_out, \
                  ReservationList3(1).time_out]
 
 
 
-        #times = [ReservationList1(1).time_out, ...
-        #         ReservationList2(1).time_out, ...
+        #times = [ReservationList1(1).time_out, \
+        #         ReservationList2(1).time_out, \
         #         ReservationList3(1).time_out]
-        [~,smallest]=min(times)
+        [_,smallest]=min(times)
 
 
         if smallest == 1:
-            disp("Agent "+self.agent_id+" replanning used replan from conflict.")
+            print("Agent "+self.agent_id+" replanning used replan from conflict.")
             self.Overlay = Overlay1
             self.reservations = ReservationList1
         elif smallest == 2:
-            disp("Agent "+self.agent_id+" replanning used replan from conflict (with delay of "+delay+").")
-            disp("Agent "+self.agent_id+" including delay on edge "+IPe.fromID+"-"+IPe.toID+" of "+delay+"t.")
+            print("Agent "+self.agent_id+" replanning used replan from conflict (with delay of "+delay+").")
+            print("Agent "+self.agent_id+" including delay on edge "+IPe.fromID+"-"+IPe.toID+" of "+delay+"t.")
             self.Overlay = Overlay2
             self.reservations = ReservationList2
         elif smallest == 3:
-            disp("Agent "+self.agent_id+" replanning used replan from start.")
+            print("Agent "+self.agent_id+" replanning used replan from start.")
             self.Overlay = Overlay3
             self.reservations = ReservationList3
 
@@ -247,12 +247,12 @@ class Agent():
         Overlay = self.DownloadOverlay()
 
         #Plan new section of route
-        [reservation_list, Overlay] = self.astar_modified(...
+        [reservation_list, Overlay] = self.astar_modified(\
             sN, self.targetID, Overlay, IPe.time_in, true)
 
         #Append new route section to old section
-        ReservationList = [InitialPath(1:early-1), reservation_list]
-        for i = 1:length(ReservationList):
+        ReservationList = [InitialPath[range(1,early-1)]][reservation_list]
+        for i in range(1, len(ReservationList)):
             ReservationList(i).position = i
 
         self.findTimeIssues(ReservationList)
@@ -273,29 +273,29 @@ class Agent():
         delay = timeFrom - IPe.time_in
 
         #Plan new section of route
-        [reservation_list, Overlay] = self.astar_modified(...
+        [reservation_list, Overlay] = self.astar_modified(\
             sN, self.targetID, Overlay, timeFrom, true)
         if early > 1:
-            InitialPath(early-1).delayed = true
+            InitialPath[early-1].delayed = true
 
 
         #Append new route section to old section
-        ReservationList = [InitialPath(1:early-1), reservation_list]
+        ReservationList = [InitialPath[range(1,early-1)]][reservation_list]
 
         #
-        if isempty(InitialPath(1:early-1)):
-            r = Reservation(reservation_list(1).fromID, ...
-                            reservation_list(1).fromID, ...
-                            self.start_time, ...
-                            reservation_list(1).time_in, ...
+        if isempty(InitialPath[range(1,early-1)]):
+            r = Reservation(reservation_list[1].fromID, \
+                            reservation_list[1].fromID, \
+                            self.start_time, \
+                            reservation_list[1].time_in, \
                             self.agent_id, 0, 1)
             r.delayed = true
             ReservationList = [r,ReservationList]
 
 
         #Update Positions
-        for i = 1:length(ReservationList):
-            ReservationList(i).position = i
+        for i in range(1, len(ReservationList)):
+            ReservationList[i].position = i
 
         self.findTimeIssues(ReservationList)
         #self.showReservationDetails(ReservationList2)
@@ -310,7 +310,7 @@ class Agent():
         Overlay = self.DownloadOverlay()
 
         #Replan from start
-        [ReservationList, Overlay] = self.astar_modified(...
+        [ReservationList, Overlay] = self.astar_modified(\
             self.currentID, self.targetID, Overlay, self.start_time, true)
         self.findTimeIssues(ReservationList)
         #self.showReservationDetails(ReservationList3)
@@ -330,8 +330,8 @@ class Agent():
         overlay = self.InitialiseOverlay()
 
         #Fill Overlay with reservation information
-        for i = 1:length(overlay.EdgeExtensions):
-            overlay.EdgeExtensions(i).reservations = ...
+        for i in range(1, len(overlay.EdgeExtensions)):
+            overlay.EdgeExtensions(i).reservations = \
             self.ROS.Coordinator.Overlay.EdgeExtensions(i).reservations
 
 
@@ -362,7 +362,7 @@ class Agent():
         while True:
 
             #Find smallest edge
-            if OPEN ~= []:
+            if OPEN != []:
                 currentNodeExt = self.findMin(OPEN)
                 print("Node "+ currentNodeExt.name+"n in focus.")
             else:
@@ -370,7 +370,7 @@ class Agent():
                 continue
 
             #Move currentNode from OPEN to CLOSED
-            OPEN(OPEN==currentNodeExt)=[]
+            OPEN[OPEN==currentNodeExt]=[]
             CLOSED = [CLOSED, currentNodeExt.id]
             print("Node "+ currentNodeExt.name+"n moved from OPEN to CLOSED.")
 
@@ -383,8 +383,8 @@ class Agent():
 
             #Determine costs for each neighbour to the current node.
             neighbour_list = tmap.findNeighbours(currentNodeExt)
-            for neighbour_entry= neighbour_list: #add {:}
-                neighbourNExt = neighbour_entry{1}
+            for neighbour_entry in neighbour_list: #add [:]
+                neighbourNExt = neighbour_entry[1]
                 print("Neighbour " +neighbourNExt.name+ "n is in focus.")
 
                 EExt=tmap.findEdgeExt(currentNodeExt.id, neighbourNExt.id)
@@ -400,7 +400,7 @@ class Agent():
                 else:
                     available, CRH = 1, 1
 
-                if !available:
+                if not available:
                     print("Edge "+currentNodeExt.name+"n-"+neighbourNExt.name+"n is NOT available (taken and CRH cant win)")
 
                     #Edge is unavailable
@@ -418,7 +418,7 @@ class Agent():
                         print("Departure for neighbour "+neighbourNExt.name+"n @ "+neighbourNExt.departure_time)
 
                         #Add failed reservation details to list
-                        FAILED = [FAILED, [neighbourNExt.id currentNodeExt.id currentNodeExt.f_cost]]
+                        FAILED += [neighbourNExt.id, currentNodeExt.id, currentNodeExt.f_cost]
                         print("Edge "+currentNodeExt.name+"n-"+neighbourNExt.name+"n added to FAILED")
                     continue
                 else:
@@ -433,7 +433,7 @@ class Agent():
                 print("Neighbour "+neighbourNExt.name+"n has f_cost of "+round(f_cost,3))
 
                 #If new path is better, update cost and parent.
-                if any([f_cost<neighbourNExt.f_cost,~any(neighbourNExt==OPEN)]):
+                if any([f_cost<neighbourNExt.f_cost,not any(neighbourNExt==OPEN)]):
 
                     neighbourNExt.UpdateCosts(f_cost, g_cost, h_cost)
                     neighbourNExt.UpdateParent(currentNodeExt.id, CRH)
@@ -444,7 +444,7 @@ class Agent():
                     print("Departure for neighbour "+neighbourNExt.name+"n @ "+neighbourNExt.departure_time)
 
                     #Include node in search for smaller routes.
-                    if ~any(neighbourNExt == OPEN):
+                    if not any(neighbourNExt == OPEN):
                         print("Neighbour "+ neighbourNExt.name+"n moved to OPEN")
                         OPEN = [OPEN, neighbourNExt]
 
@@ -478,7 +478,7 @@ class Agent():
 
         #Extract the local CRH score
         conflicting_CRH = 0
-        for R = conflicts_list:
+        for R in conflicts_list:
             conflicting_CRH = conflicting_CRH + R.CRH
 
 
@@ -491,9 +491,9 @@ class Agent():
         #If local CRH score is smaller, return failure.
         success = (CRH_Score > conflicting_CRH)
         if success:
-            for R = conflicts_list:
-                print("Agent " + self.agent_id + " can take edge " + ...
-                    EExt.edge.node1.id + "-"+ EExt.edge.node2.id + ...
+            for R in conflicts_list:
+                print("Agent " + self.agent_id + " can take edge " + \
+                    EExt.edge.node1.id + "-"+ EExt.edge.node2.id + \
                     " from Agent " + R.agent_id + " with CRH " + CRH_Score + " using " + self.planningType)
         return [success, CRH_Score]
 
@@ -525,7 +525,7 @@ class Agent():
         CRH = self.task_importance
         return CRH
 
-    def GenerateDynamicCRH(self, C, N, T, ~):
+    def GenerateDynamicCRH(self, C, N, T, other_stuff_i_guess):
         CRH = 0
 
         #Identify independent heuristic
@@ -573,7 +573,7 @@ class Agent():
 
         return CRH
 
-    def GenerateStaticCRH(self, ~, ~, ~, ~):
+    def GenerateStaticCRH(self, a, b, c, d):
         CRH = 0
 
         #Identify independent heuristic
@@ -620,25 +620,24 @@ class Agent():
 
 
     # Motion Planning Tools
-    @classmethod
-    def findMin(~, OPEN):
-        [~,idx] = min([OPEN.f_cost])
+    def findMin(self, OPEN):
+        [_,idx] = min([OPEN.f_cost])
         minNode = OPEN(idx)
         return minNode
 
-    def findMinFailed(self, FAILED, CLOSED, OPEN, ~, overlay):
+    def findMinFailed(self, FAILED, CLOSED, OPEN, other_stuff_i_guess, overlay):
 
         print("          OPEN List Empty")
         print("          FAILED List:")
-        print(round(FAILED',3))
+        print(round(FAILED.transpose,3))
 
-        FAILED(:,any(FAILED(1,:)==CLOSED'))=[]
+        FAILED[:][any(FAILED[1]==CLOSED.transpose)]=[]
 
         smallest = [0,0,0,0,Inf]
-        minimal = FAILED(:,FAILED(3,:)==min(FAILED(3,:)))
+        minimal = FAILED[:][FAILED[3]==min(FAILED[3])]
 
         T = overlay.findNodeExt(self.targetID)
-        for m = minimal: #[neighbour_id, current_id, current_f_cost]
+        for m in minimal: #[neighbour_id, current_id, current_f_cost]
 
             #Identify nodes
             N = overlay.findNodeExt(m(1)) #neighbour Node
@@ -656,8 +655,8 @@ class Agent():
 
 
         #Identify nodes
-        N = overlay.findNodeExt(smallest(1))
-        P = overlay.findNodeExt(smallest(2))
+        N = overlay.findNodeExt(smallest[1])
+        P = overlay.findNodeExt(smallest[2])
 
         #Identify delay time and new arrival time
         EExt = overlay.findEdgeExt(P.id, N.id)
@@ -670,7 +669,7 @@ class Agent():
         EExt.deadlock_overcome = true
 
         #Save new meta info
-        N.UpdateCosts(smallest(3), smallest(4), smallest(5))
+        N.UpdateCosts(smallest[3], smallest[4], smallest[5])
         P.departure_time = NewPDeparture
         P.set_departure_times(N.id, NewPDeparture)
         N.UpdateTimes(P, EExt)
@@ -678,7 +677,7 @@ class Agent():
         #Log out some information
         print(EExt)
         print(EExt.reservations)
-        print("Agent "+self.agent_id+" including local delay on edge "+...
+        print("Agent "+self.agent_id+" including local delay on edge "+\
             P.name+"-"+N.name+" of "+PDepartureDelay+"t.")
         print("Agent "+self.agent_id+" entering "+P.name+"n-"+N.name+"n @ t"+P.departure_time)
         print("Agent "+self.agent_id+"  exiting "+P.name+"n-"+N.name+"n @ t"+N.arrival_time)
@@ -688,16 +687,16 @@ class Agent():
         OPEN = [OPEN, N]
 
         #Remove neighbour from FAILED list
-        print("            Edge "+FAILED(1)+"i-"+FAILED(2)+"i removed from FAILED")
-        FAILED(:,all(FAILED(1:2,:)==smallest(1:2)')) = []
+        print("            Edge "+FAILED[1]+"i-"+FAILED[2]+"i removed from FAILED")
+        FAILED[:][all(FAILED[1:2,:]==smallest[1:2].transpose)] = []
 
         return [OPEN, FAILED]
 
-    def pythag(~, nodeA, nodeB):
-        Ax = nodeA.position(1)
-        Ay = nodeA.position(2)
-        Bx = nodeB.position(1)
-        By = nodeB.position(2)
+    def pythag(self, nodeA, nodeB):
+        Ax = nodeA.position[1]
+        Ay = nodeA.position[2]
+        Bx = nodeB.position[1]
+        By = nodeB.position[2]
         dist = sqrt(power(Ax-Bx,2)+power(Ay-By,2))
         return dist
 
@@ -708,30 +707,31 @@ class Agent():
         path = current
 
         #Generate list of nodes from endpoint to startpoint
-        while current.parent_id ~= -1:
+        while current.parent_id != -1:
 
             #Append new path component
             current = overlay.findNodeExt(current.parent_id)
-            path(end+1) = current
+            path[end+1] = current
 
 
         #Generate list of Reservation Objects to publish
-        #TODO: find a way to not need the following line... {}?
+        #TODO: find a way to not need the following line\ []?
         Reservation_List = Reservation(0,0,0,0,0,0,0)
-        for i = 2:length(path):
-            Start=path(i)
-            Target=path(i-1)
+        for i in range(2, len(path)):
+            Start=path[i]
+            Target=path[i-1]
 
             #Create reservation objects
-            Reservation_List(i-1) = Reservation(...
-                             Start.id, ...
-                             Target.id, ...
-                             Start.get_departure_times(Target.id), ...
-                             Target.arrival_time, ...
-                             self.agent_id, ...
-                             Target.CRH, ... #self.getCRH(), ...
-                             (length(path)-i)+1)
-            Reservation_List(i-1).delayed = Start.arrival_time ~= Start.get_departure_times(Target.id) #Start.departure_time
+            Reservation_List[i-1] = Reservation(\
+                             Start.id, \
+                             Target.id, \
+                             Start.get_departure_times(Target.id), \
+                             Target.arrival_time, \
+                             self.agent_id, \
+                             Target.CRH, \
+                             #self.getCRH(),
+                             (len(path)-i)+1)
+            Reservation_List[i-1].delayed = Start.arrival_time != Start.get_departure_times(Target.id) #Start.departure_time
 
         Reservation_List = flip(Reservation_List)
         return Reservation_List
@@ -741,23 +741,23 @@ class Agent():
 
         #Generate and apply uuid to the reservation objects
         self.reservation_uuid = self.reservation_uuid + 1
-        for r = reservation_list:
+        for r in reservation_list:
             r.uuid = self.reservation_uuid
 
 
         #Count deadlocks overcome
-        for i = 2:length(reservation_list):
+        for i in range(2, len(reservation_list)):
             r=reservation_list(i)
-            if r.fromID ~= r.toID:
+            if r.fromID != r.toID:
                 EExt = self.Overlay.findEdgeExt(r.fromID, r.toID)
-                self.total_deadlocks_overcome=self.total_deadlocks_overcome...
+                self.total_deadlocks_overcome=self.total_deadlocks_overcome\
                     +EExt.deadlock_overcome
 
         #Publish the list of Reservation objects
         self.ROS.Topic_publishReservations(reservation_list)
 
 
-    # Display Functions
+    # printlay Functions
     def plotRouteTimes(self, reservation_list):
 
         #If agent has not been given or has reached its goal, return
@@ -765,11 +765,11 @@ class Agent():
             return
 
         #Define Colour Pallette
-        shadeG = linspace(.8, .4, length(reservation_list))'
+        shadeG = linspace(.8, .4, len(reservation_list)).transpose
         shadeR = flip(shadeG)
 
         #For each node after the first, print the time
-        for i = 1:length(reservation_list)-1:
+        for i in range(1, len(reservation_list)-1):
             Res = reservation_list(i)
 
             #Identify location to print text
@@ -796,40 +796,41 @@ class Agent():
 
 
 
-    def showReservationDetails(~, reservation_list):
-        position = [reservation_list.position]'
-        path = [reservation_list.fromID, reservation_list.toID]'
-        times = [reservation_list.time_in, reservation_list.time_out]'
-        delayed_leaving = logical([reservation_list.delayed]')
+    def showReservationDetails(self, reservation_list):
+        position = [reservation_list.position].transpose
+        path = [reservation_list.fromID, reservation_list.toID].transpose
+        times = [reservation_list.time_in, reservation_list.time_out].transpose
+        delayed_leaving = logical([reservation_list.delayed].transpose)
         T = table(position,path,times,delayed_leaving)
-        disp(T)
+        print(T)
 
 
 
     # Debug Tools
     def findTimeIssues(self, reservation_list):
         tin= [reservation_list.time_in]
-        tout=[reservation_list.time_out]
-        err=[0,tout]'>[tin,Inf]'
+        tout = [reservation_list.time_out]
+        err = [0,tout].transpose > [tin,Inf].transpose
         if any(err):
             positions_with_err=find(err)
-            disp(positions_with_err)
+            print(positions_with_err)
             self.showReservationDetails(reservation_list)
             d=r # <-- this is a breakpoint
 
 
 
-    def ddisp(self, msg):
+    def dprint(self, msg):
         msg=msg
 
 
-    def cdisp(~, colour, msg):
+    def cprint(self, colour, msg):
         cprintf(colour,msg+"\n")
 
 
     # Update Functions
     def UpdateLocation(self, t):
-        if self.idle, disp("Agent "+self.agent_id+" is IDLE at TARGET "+self.Overlay.findNodeExt(self.currentID).name):
+        if self.idle:
+            print("Agent "+self.agent_id+" is IDLE at TARGET "+self.Overlay.findNodeExt(self.currentID).name)
             return
 
         #Identify the node the Agent is at at time t.
@@ -854,13 +855,13 @@ class Agent():
         T=self.Overlay.findNodeExt(self.targetID)
         if T.arrival_time == t:
             self.currentID = self.targetID
-            disp("Agent "+self.agent_id+" has moved to TARGET "+T.name)
+            print("Agent "+self.agent_id+" has moved to TARGET "+T.name)
             blob = 1
         else:
-            for Res = self.reservations:
+            for Res in self.reservations:
                 if t >= Res.time_in:
                     self.currentID = Res.fromID
-                    disp("Agent "+self.agent_id+" has moved to node "+self.Overlay.findNodeExt(self.currentID).name)
+                    print("Agent "+self.agent_id+" has moved to node "+self.Overlay.findNodeExt(self.currentID).name)
                     blob=1
                     break
         """
@@ -869,12 +870,12 @@ class Agent():
         #Set Agent to idle if the goal is reached
         newName = self.Overlay.findNodeExt(self.currentID).name
         if self.currentID == self.targetID:
-            disp("Agent "+self.agent_id+" has moved to TARGET "+newName)
+            print("Agent "+self.agent_id+" has moved to TARGET "+newName)
             self.idle = true
             self.reservations = []
             self.ROS.Coordinator.Overlay.RemovePath(self.agent_id)
         else:
-            disp("Agent "+self.agent_id+" has moved to node "+newName)
+            print("Agent "+self.agent_id+" has moved to node "+newName)
             self.idle = false
 
 

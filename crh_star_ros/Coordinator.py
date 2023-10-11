@@ -11,17 +11,16 @@ class Coordinator():
     def Subscribe_ReservationsUpdate(self, reservation_list):
         aid=reservation_list[1].agent_id
 
-        print("Agent "+aid+" reserved "+length(reservation_list)+" edges.")
+        print("Agent "+aid+" reserved "+len(reservation_list)+" edges.")
 
-        notifications = {}
+        notifications = []
         agents = []
 
         #Remove existing reservations by the agent publishing the path
         self.Overlay.RemovePath(aid)
 
         #For each edge taken by reservation
-        for i = 1:length(reservation_list):
-            r = reservation_list(i)
+        for r in reservation_list:
 
             #Manage Extra Delay Reservation
             if r.fromID == r.toID:
@@ -32,48 +31,48 @@ class Coordinator():
             existingConflicts = EExt.IsEmpty(r.time_in, r.time_out)
 
             #Add conflict details to list
-            if ~isempty(existingConflicts):
-                for oldR = existingConflicts:
+            if not isempty(existingConflicts):
+                for oldR in existingConflicts:
                     EExt.total_conflicts = EExt.total_conflicts + 1
-                    notifications{end+1} = oldR
-                    agents(end+1) = oldR.agent_id
+                    notifications[end+1] = oldR
+                    agents[end+1] = oldR.agent_id
 
             #Add the new reservation
             EExt.AddReservation(r.agent_id, r.time_in, r.time_out, r.CRH, r.position, r.uuid)
 
         #Get list of unique agents to notify
-        agents = unique(agents)
-        if ~isempty(agents):
-            print("Agent "+aid+" caused "+length(notifications) + ...
-                " conflicts with agents: " + ...
-                "["+strjoin(string(agents), ',')+"]")
+        agents = set(agents)
+        if not isempty(agents):
+            print("Agent "+aid+" caused "+len(notifications) + \
+                " conflicts with agents: " + \
+                "["+', '.join(agents)+"]")
         else:
             print("Agent "+aid+" caused no conflicts.")
 
 
         #Update overlay UUID to show change in reservations. (unused)
-        self.OverlayUUID = self.OverlayUUID + 1
+        self.OverlayUUID += 1
 
         #For each unique agent which has lost a reservation
         for a in agents:
 
             #Identify failed reservations to send to agent
-            agent_failed_reservations = {};
+            agent_failed_reservations = []
             for n in notifications:
-                if n{1}.agent_id == a:
-                    if C.existsConflict(n{1}, aid):
-                        agent_failed_reservations{end+1} = n{1}
+                if n[1].agent_id == a:
+                    if C.existsConflict(n[1], aid):
+                        agent_failed_reservations[end+1] = n[1]
 
             #Notify agent of its failed reservations
-            if ~isempty(agent_failed_reservations):
+            if not isempty(agent_failed_reservations):
                 self.publishNotifications(a, agent_failed_reservations)
 
-    def existsConflict(self, n, aid)
+    def existsConflict(self, n, aid):
         EExt = self.Overlay.findEdgeExt(n.fromID, n.toID)
         existingConflicts = EExt.IsEmpty(n.time_in, n.time_out)
 
-        # < 2 reservation -< conflict impossible -< replan not needed
-        conflictExists = length(existingConflicts) >= 2;
+        # < 2 reservation <== conflict impossible <= replan not needed
+        conflictExists = len(existingConflicts) >= 2;
 
         if conflictExists:
             ec=[existingConflicts.agent_id]
@@ -94,8 +93,8 @@ class Coordinator():
         the end
         """
 
-        if length(existingConflicts) > 2:
-            disp("This is probably an issue... shouldnt exceed 2 reservations")
+        if len(existingConflicts) > 2:
+            print("This is probably an issue\ shouldnt exceed 2 reservations")
         return conflictExists
 
     def publishNotifications(self, agent_id, reservations):

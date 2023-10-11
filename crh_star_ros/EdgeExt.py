@@ -18,12 +18,12 @@ class EdgeExt():
         self.total_conflicts = 0
 
     def PurgeAgent(self, agent_id):
-        if ~isempty(self.reservations):
-            self.reservations(self.reservations(:,1) == agent_id,:) = []
+        if not isempty(self.reservations):
+            self.reservations[self.reservations[:,1] == agent_id,:] = []
 
     def PurgeOld(self, t):
-        if ~isempty(self.reservations):
-            self.reservations(self.reservations(:,3) <= t,:) = []
+        if not isempty(self.reservations):
+            self.reservations[self.reservations[:,3] <= t,:] = []
 
     def IsEmpty(self, fromT, tillT):
         result = IsEmpty2(self, fromT, tillT, self.edge.node1.id);
@@ -37,7 +37,7 @@ class EdgeExt():
           |-----|        |------------|        |------|
                tillT                        fromT
 
-          if ~(tillT < res.timefrom | fromT > res.timetill)
+          if not (tillT < res.timefrom | fromT > res.timetill)
               bad
         """
         res = self.reservations;
@@ -45,17 +45,17 @@ class EdgeExt():
 
         BEFORE = tillT <= res(:,2);
         AFTER = fromT >= res(:,3);
-        conflicts = res(~( BEFORE | AFTER),:);
+        conflicts = res(not ( BEFORE | AFTER),:);
 
         edgeNames = [self.edge.node1.id, self.edge.node2.id];
 
-        for i = 1:size(conflicts,1)
-            r=num2cell([fromID, edgeNames(edgeNames~=fromID),...
-                conflicts(i,[2,3,1,4,5])]);
-            result(i) = Reservation(r{:});
-            result(i).uuid = conflicts(i,6);
+        for i in range(1, size(conflicts,1))
+            r=num2cell([fromID, edgeNames(edgeNames!=fromID),\
+                conflicts[i,[2,3,1,4,5]]]);
+            result[i] = Reservation(r[:]);
+            result[i].uuid = conflicts[i,6];
 
-        if ~exist('result','var'):
+        if not exist('result','var'):
             result = []
             return result
 
@@ -66,11 +66,11 @@ class EdgeExt():
 
         #Sort reservations
         R = self.reservations
-        [~,g]=sort(R(:,3))
+        [_ ,g]=sort(R(:,3))
         R=R(g,:)
 
         #Remove any reservations before the current request
-        R(R(:,3) <= fromT,:) = [] #R(R(:,3) < fromT,:) = []
+        R[R(:,3) <= fromT,:] = [] #R[R(:,3) < fromT,:] = []
 
         #If no more reservations, return (this should never be hit)
         if isempty(R):
@@ -84,7 +84,7 @@ class EdgeExt():
         spaces=[R(2:end,2);inf]-R(:,3)
 
         #Find next space available greater than the space required
-        if spaces(find(spaces>duration,1)) == Inf:
+        if spaces[find(spaces>duration,1)] == Inf:
             #If no space between reservations, take exit from last
             newFromT = R(end,3)+1
         else:
